@@ -196,6 +196,13 @@ public class WeiXinTask
         return false;
     }
 
+    // 太快，可能不响应
+    private void closeWindow(AccessibilityService service)
+    {
+        service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+    }
+
+
     private void onFoundTarget(AccessibilityNodeInfo nodeInfo)
     {
         nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
