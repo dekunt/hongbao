@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">抢红包</string>
+    <string name="main_title">抢红包</string>
+    <string name="main_tip">提示：\n1. 需要“高级设置—辅助功能”开启抢红包服务\n2. 需要开启微信新消息通知\n3. 留在聊天页没有新消息通知</string>
+    <string name="go_setting">去开启服务</string>
+    <string name="go_setting_on">去关闭服务</string>
+    <string name="check_unlock">自动解锁屏幕</string>
+    <string name="check_back_home">抢完回到桌面</string>
+</resources>

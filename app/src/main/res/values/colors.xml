@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="text_title">#ffffff</color>
+    <color name="background_title">#222222</color>
+    <color name="line_gray">#888888</color>
+    <color name="btn_text_on">#444444</color>
+    <color name="btn_text">#ee0000</color>
+    <color name="text_tip">#666666</color>
+</resources>
