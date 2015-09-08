@@ -9,13 +9,15 @@ import android.view.accessibility.AccessibilityNodeInfo;
  */
 public class QQTask
 {
+    private static final long SPLASH_TIME = 3000;
     private static final long FINDING_TIMEOUT = 5000;
 
     private static long currentTaskId;
 
-    private long mTaskId;
     private AccessibilityService mService;
+    private long mTaskId;
     private boolean maybeQQTarget;
+    private boolean mEnteredChatUI;
 
 
     // Find QQ hongBao and open
@@ -29,12 +31,13 @@ public class QQTask
         this.mService = service;
         this.mTaskId = System.currentTimeMillis();
         this.maybeQQTarget = false;
+        this.mEnteredChatUI = false;
         currentTaskId = this.mTaskId;
     }
 
     private boolean isCurrentTask()
     {
-        return this.mTaskId != currentTaskId ;
+        return this.mTaskId == currentTaskId ;
     }
 
     private boolean isTimeout()
@@ -42,6 +45,10 @@ public class QQTask
         return (this.mTaskId + FINDING_TIMEOUT) < System.currentTimeMillis();
     }
 
+    private boolean isSplashTimeout()
+    {
+        return (this.mTaskId + SPLASH_TIME) < System.currentTimeMillis();
+    }
 
     // Find target with runnable
     private void findTarget()
@@ -50,8 +57,27 @@ public class QQTask
         {
             public void run()
             {
-                if (isCurrentTask())
+                if (!isCurrentTask())
                     return;
+
+                AccessibilityNodeInfo nodeInfo = mService.getRootInActiveWindow();
+                if (!mEnteredChatUI)
+                {
+                    if (isChatFragment(nodeInfo)) {
+                        mEnteredChatUI = true;
+                        mTaskId = System.currentTimeMillis();
+                        currentTaskId = mTaskId;
+                    }
+                    else if (isSplashTimeout()) {
+                        PublicMethods.returnHome(mService);
+                        return;
+                    }
+                    else {
+                        findTarget();
+                        return;
+                    }
+                }
+
                 if (isTimeout())
                 {
                     if (AAAService.needAutoReturnHome)
@@ -59,7 +85,6 @@ public class QQTask
                     return;
                 }
 
-                AccessibilityNodeInfo nodeInfo = mService.getRootInActiveWindow();
                 if (!openTargetLoop(nodeInfo))
                     findTarget();
             }
@@ -67,6 +92,30 @@ public class QQTask
         new Handler().postDelayed(runnable, 100L);
     }
 
+
+    private boolean isChatFragment(AccessibilityNodeInfo nodeInfo)
+    {
+        if (nodeInfo == null || !nodeInfo.getPackageName().toString().equals("com.tencent.mobileqq"))
+            return false;
+        int count = nodeInfo.getChildCount();
+        if (count > 0)
+        {
+            if (count >= 4 && nodeInfo.getClassName().toString().equals("android.widget.FrameLayout")
+                    && nodeInfo.getChild(count - 4).getClassName().toString().equals("android.widget.ImageButton")
+                    && nodeInfo.getChild(count - 3).getClassName().toString().equals("android.widget.ImageButton")
+                    && nodeInfo.getChild(count - 2).getClassName().toString().equals("android.widget.EditText")
+                    && nodeInfo.getChild(count - 1).getClassName().toString().equals("android.widget.Button"))
+            {
+                return true;
+            }
+            for (int i = count - 1; i >= 0; i--)
+            {
+                if (isChatFragment(nodeInfo.getChild(i)))
+                    return true;
+            }
+        }
+        return false;
+    }
 
     // Open QQ target loop
     private boolean openTargetLoop(AccessibilityNodeInfo nodeInfo)

@@ -22,12 +22,11 @@ public class AAAService extends AccessibilityService
             Notification notification = (Notification)event.getParcelableData();
             if (event.getPackageName().toString().equals("com.tencent.mm")
                     && !event.getText().isEmpty()
-                    && event.getText().get(0).toString().contains("[微信红包]"))
+                    && (event.getText().get(0).toString().contains("[微信红包]") || event.getText().get(0).toString().equals("你收到了一条消息")))
             {
                 onWeiXinNotification(notification);
             }
-            else if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED
-                    && event.getPackageName().toString().equals("com.tencent.mobileqq")
+            else if (event.getPackageName().toString().equals("com.tencent.mobileqq")
                     && !event.getText().isEmpty()
                     && event.getText().get(0).toString().contains("[QQ红包]"))
             {
@@ -37,7 +36,7 @@ public class AAAService extends AccessibilityService
         else if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
                 && event.getPackageName().toString().equals("com.tencent.mm"))
         {
-                onWeiXinWindowChanged();
+            onWeiXinWindowChanged(event.getClassName().toString());
         }
     }
 
@@ -48,9 +47,20 @@ public class AAAService extends AccessibilityService
     }
 
 
-    private void onWeiXinWindowChanged()
+    private void onWeiXinWindowChanged(String className)
     {
-        WeiXinTask.openTarget(this);
+        switch (className)
+        {
+            case "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI":
+                WeiXinTask.openTarget(this);
+                break;
+            case "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyDetailUI":
+                WeiXinTask.onOpenDetailUI(this);
+                break;
+            case "com.tencent.mm.ui.base.o":
+                WeiXinTask.onWaitingDialogShowed();
+                break;
+        }
     }
 
     private void onWeiXinNotification(final Notification notification)
