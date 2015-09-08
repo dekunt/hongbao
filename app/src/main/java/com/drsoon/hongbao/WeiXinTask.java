@@ -1,10 +1,12 @@
 package com.drsoon.hongbao;
 
 import android.accessibilityservice.AccessibilityService;
+import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by dekunt on 15/9/3.
@@ -129,7 +131,7 @@ public class WeiXinTask
 
 
     // Find target loop
-    private boolean findTargetLoop(AccessibilityNodeInfo nodeInfo)
+    private boolean findTargetLoop16(AccessibilityNodeInfo nodeInfo)
     {
         if (nodeInfo == null)
             return false;
@@ -149,6 +151,47 @@ public class WeiXinTask
         {
             if (findTargetLoop(nodeInfo.getChild(i)))
                 return true;
+        }
+        return false;
+    }
+
+    // Find target loop: 16，17，18 三者速度差不多
+    private boolean findTargetLoop(AccessibilityNodeInfo nodeInfo)
+    {
+        if (nodeInfo == null)
+            return false;
+        boolean result;
+        int sdk = android.os.Build.VERSION.SDK_INT;
+        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN_MR2)
+            result = findTargetLoop17(nodeInfo);
+        else
+            result = findTargetLoop18(nodeInfo);
+        return result;
+    }
+
+    @SuppressLint("NewApi")
+    private boolean findTargetLoop18(AccessibilityNodeInfo nodeInfo)
+    {
+        List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/w_");
+        if (list == null || list.isEmpty())
+            return false;
+        onFoundTarget(list.get(list.size() - 1));
+        return true;
+    }
+
+    private boolean findTargetLoop17(AccessibilityNodeInfo nodeInfo)
+    {
+        List<AccessibilityNodeInfo> list = nodeInfo.findAccessibilityNodeInfosByText("领取红包");
+        if (list == null || list.isEmpty())
+            return false;
+        for (int i = list.size() - 1; i >= 0; i--)
+        {
+            AccessibilityNodeInfo info = list.get(i).getParent();
+            if (info.getClassName().toString().equals("android.widget.LinearLayout"))
+            {
+                onFoundTarget(info);
+                return true;
+            }
         }
         return false;
     }
