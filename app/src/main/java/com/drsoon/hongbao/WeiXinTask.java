@@ -124,7 +124,7 @@ public class WeiXinTask
                     findTarget();
             }
         };
-        new Handler().postDelayed(runnable, 100L);
+        new Handler().postDelayed(runnable, 40);
     }
 
 

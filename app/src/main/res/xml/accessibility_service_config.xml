@@ -5,7 +5,7 @@
     android:accessibilityEventTypes="typeWindowStateChanged|typeNotificationStateChanged"
     android:packageNames="com.tencent.mm, com.tencent.mobileqq"
     android:accessibilityFeedbackType="feedbackGeneric"
-    android:notificationTimeout="100"
+    android:notificationTimeout="50"
     android:accessibilityFlags="flagReportViewIds"
     android:canRetrieveWindowContent="true"
     xmlns:android="http://schemas.android.com/apk/res/android" />
