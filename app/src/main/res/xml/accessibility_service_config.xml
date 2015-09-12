@@ -2,7 +2,7 @@
 
 <accessibility-service
     android:description="@string/app_name"
-    android:accessibilityEventTypes="typeWindowStateChanged|typeNotificationStateChanged"
+    android:accessibilityEventTypes="typeNotificationStateChanged|typeWindowStateChanged"
     android:packageNames="com.tencent.mm, com.tencent.mobileqq"
     android:accessibilityFeedbackType="feedbackGeneric"
     android:notificationTimeout="50"

@@ -17,26 +17,26 @@ public class AAAService extends AccessibilityService
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event)
     {
-        if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED)
+        switch (event.getEventType())
         {
-            Notification notification = (Notification)event.getParcelableData();
-            if (event.getPackageName().toString().equals("com.tencent.mm")
-                    && !event.getText().isEmpty()
-                    && (event.getText().get(0).toString().contains("[微信红包]") || event.getText().get(0).toString().equals("你收到了一条消息")))
-            {
-                onWeiXinNotification(notification);
-            }
-            else if (event.getPackageName().toString().equals("com.tencent.mobileqq")
-                    && !event.getText().isEmpty()
-                    && event.getText().get(0).toString().contains("[QQ红包]"))
-            {
-                onQQNotification(notification);
-            }
-        }
-        else if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-                && event.getPackageName().toString().equals("com.tencent.mm"))
-        {
-            onWeiXinWindowChanged(event.getClassName().toString());
+            case AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED:
+                Notification notification = (Notification)event.getParcelableData();
+                if (event.getPackageName().toString().equals("com.tencent.mm")
+                        && !event.getText().isEmpty()
+                        && (event.getText().get(0).toString().contains("[微信红包]") || event.getText().get(0).toString().equals("你收到了一条消息")))
+                {
+                    onWeiXinNotification(notification);
+                }
+                else if (event.getPackageName().toString().equals("com.tencent.mobileqq")
+                        && !event.getText().isEmpty()
+                        && event.getText().get(0).toString().contains("[QQ红包]"))
+                {
+                    onQQNotification(notification);
+                }
+                break;
+            case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
+                onWeiXinWindowChanged(event.getClassName().toString());
+                break;
         }
     }
 
