@@ -209,8 +209,15 @@ public class WeiXinTask
         if (nodeInfo.getChildCount() == 0)
         {
             CharSequence nodeText = nodeInfo.getText();
-            if (nodeText != null && nodeText.toString().equals("拆红包")
-                    && nodeInfo.getParent().getClassName().toString().equals("android.widget.FrameLayout"))
+            if (nodeText != null && "拆红包".equals(nodeText.toString())
+                    && "android.widget.FrameLayout".equals(nodeInfo.getParent().getClassName().toString()))
+            {
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                return true;
+            }
+            // 兼容微信新版本6.3.9
+            else if (nodeText == null && "android.widget.Button".equals(nodeInfo.getClassName().toString())
+                    && "android.widget.FrameLayout".equals(nodeInfo.getParent().getClassName().toString()))
             {
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 return true;
