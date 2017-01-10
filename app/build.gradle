@@ -6,10 +6,10 @@ android {
 
     signingConfigs {
         config {
-            keyAlias 'hongbao'
-            keyPassword 'drsoon#123'
-            storeFile file('keystore_hongbao.jks')
-            storePassword 'drsoon#123'
+            keyAlias 'test'
+            keyPassword 'mytest'
+            storeFile file('android_keystore.jks')
+            storePassword 'mytest'
         }
     }
 
